@@ -1,3 +1,4 @@
+
 # Project Phases and Progress
 
 ## Status Definitions
@@ -14,45 +15,66 @@ Completed decisions:
 - Standalone development is acceptable.
 - Existing ERP integration is not a prerequisite.
 - The team has four members.
-- The target timeline is 2–4 weeks.
+- Target timeline: 2–4 weeks.
 
 Pending:
-- Confirm actual admission rules and required documents.
-- Ask about existing ERP source code and APIs.
+- Confirm admission rules and required documents.
+- Investigate existing ERP source code and APIs.
 - Confirm student identifier and roll-number rules.
 
 ## Phase 1 — Environment and Repository
 Status: In Progress
 
-Recorded:
-- Initial repository structure was created.
-- Initial folders include admission/, student/, shared/, backend/, and docs/.
+Verified:
+- Initial GitHub documentation commit exists.
+- GitHub repository and initial project folders are established.
+- Docker CLI is installed.
+- Docker container execution verified using hello-world.
 
-Still to verify:
-- GitHub push and repository access for all four members.
-- Git, Node.js, Python, and Docker on the development computers.
-- Docker container execution.
+Pending:
+- Verify repository access for all four members.
+- Verify Node.js, Python, and Docker on all development computers.
+- Complete the initial environment milestone.
 
 ## Phase 2 — Requirements and Architecture
 Status: In Progress
 
-- Initial PRD and architecture documentation drafted.
-- Coding and collaboration rules drafted.
-- Initial module integration approach defined.
+Completed:
+- Initial PRD drafted.
+- Architecture and integration approach documented.
+- Coding and collaboration rules documented.
+- Admission and Student Management will be developed in separate folders.
+- Shared interfaces must be agreed before integration.
 
 Pending:
-- Review documents with the team.
-- Confirm data relationships and API contracts.
+- Review documentation with the team.
+- Confirm database relationships and API contracts.
 - Confirm module owners and working schedule.
 
 ## Phase 3 — Backend and Database Foundation
-Status: Planned
+Status: In Progress
+
+Implemented:
+- Initial PostgreSQL Docker Compose configuration created.
+- Local database environment configured.
 
 Acceptance criteria:
-- PostgreSQL runs through Docker Compose.
+- Docker Compose starts PostgreSQL successfully.
+- PostgreSQL reports a healthy status.
+- SQL query confirms the database and database user.
 - FastAPI starts successfully.
 - Health endpoint and API documentation work.
 - Initial database migration runs successfully.
+
+PostgreSQL status:
+- Mark Tested only after the container health check and SQL verification succeed.
+
+Pending:
+- Verify PostgreSQL container and SQL query.
+- Establish Python virtual environment.
+- Implement FastAPI health endpoint.
+- Connect FastAPI to PostgreSQL.
+- Add initial database migration.
 
 ## Phase 4 — Authentication and Permissions
 Status: Planned
@@ -73,7 +95,9 @@ Status: Planned
 Status: Planned
 
 ## Team Updates
-When a teammate completes a milestone, append:
+
+Every teammate should append the following when completing a milestone:
+
 - Date:
 - Member:
 - Milestone:

@@ -1,59 +1,109 @@
+
 # Architecture and Technical Decisions
 
 ## 1. Architecture
-Build one integrated web application with Admission and Student modules
-developed in separate folders and integrated after their interfaces are agreed.
 
-The modules will share a backend, database, authentication foundation,
-and approved contracts where appropriate.
+Build one integrated web application with two independently developed modules:
 
-## 2. Provisional Technology Stack
-- Frontend: React, TypeScript, Vite, Tailwind CSS.
-- Routing and HTTP: React Router and Axios.
-- Backend: Python, FastAPI, Pydantic, SQLAlchemy.
-- Database: PostgreSQL for standalone development.
-- Database migrations: Alembic.
-- Local database environment: Docker Compose.
-- Collaboration: Git and GitHub.
+- Admission Management
+- Student Management
 
-These choices are provisional until the foundation is verified.
+Both modules will be integrated after their shared interfaces and data relationships are agreed.
 
-## 3. Initial Repository Structure
+The application will use a shared backend, database, authentication foundation, and approved API contracts where appropriate.
+
+## 2. Technology Stack
+
+Frontend:
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+
+Backend:
+- Python
+- FastAPI
+- Pydantic
+- SQLAlchemy
+- Alembic
+
+Database:
+- PostgreSQL 16 for standalone development.
+
+Local database environment:
+- Docker Compose.
+
+Collaboration:
+- Git
+- GitHub
+- Visual Studio Code
+
+The deployment provider remains undecided.
+
+## 3. Repository Structure
+
 - admission/: Admission module.
 - student/: Student Management module.
-- shared/: Shared types, contracts, and reusable code where appropriate.
-- backend/app/: Shared backend foundation and application logic.
+- shared/: Shared types, contracts, and reusable code.
+- backend/app/: Backend application and business logic.
 - backend/tests/: Backend tests.
 - docs/: Project documentation.
-- README.md: Setup and execution instructions.
+- docker-compose.yml: Local database service configuration.
+- README.md: Installation and execution instructions.
 
-The internal frontend and backend organization of each module will be
-finalized before feature development. Avoid unnecessary duplication.
+The internal frontend and backend organization will be finalized before feature development.
 
-## 4. Intended Data Flow
-Applicant -> Admission API -> Database
-Admission review -> Authorized approval
-Approval transaction -> Student record creation
-Student Management -> Student API -> Database
+## 4. Database Development Environment
 
-The backend is responsible for authorization, validation, and enforcing
-business rules. Frontend checks alone are not security controls.
+PostgreSQL runs locally through Docker Compose.
 
-## 5. Integration Rules
-- Agree on API contracts and data relationships before module integration.
-- Create student records only when approved enrollment conditions are met.
-- Link each student record to its originating admission application.
-- Enforce uniqueness and use transactions where appropriate.
+Configuration:
+- Database: college_erp
+- Database user: erp_user
+- Database password: supplied through a local .env file.
+- Persistent storage: Docker named volume.
+- Port binding: localhost only.
+
+Secrets must not be committed to GitHub.
+
+The development database uses synthetic data and is not the college's production database.
+
+## 5. Intended Data Flow
+
+Applicant
+-> Admission API
+-> Admission application stored in database
+-> Authorized document review and admission decision
+-> Student creation transaction
+-> Student Management API
+-> Official student record within our application
+
+The backend enforces authorization, validation, and business rules.
+
+## 6. Integration Rules
+
+- Agree on API contracts and data relationships before integration.
+- Create student records only after approved enrollment conditions are met.
+- Link every student record to its originating admission application.
+- Enforce uniqueness and use database transactions where appropriate.
 - Prevent duplicate student creation.
 - Do not connect to production systems without authorization.
 
-## 6. Existing College ERP
+## 7. Existing College ERP
+
 The existing Android APK is available, but its original source code,
 backend, database, and API capabilities have not been established.
-Standalone development will proceed using synthetic data.
-Any future integration requires college authorization and technical review.
 
-## 7. Deployment and Mobile
-Deployment provider is undecided.
-The initial user experience should be responsive in desktop and mobile browsers.
+Standalone development will proceed using synthetic data.
+
+Any future integration requires college authorization and technical investigation.
+
+## 8. Mobile and Deployment
+
+The application should support responsive desktop and mobile browsers.
+
 PWA support may be considered later.
+
+The deployment provider and production database architecture remain undecided.
