@@ -115,3 +115,12 @@ Do not mark a phase complete until its acceptance criteria have been verified.
 - [x] Verified `/health` and `/docs` locally.
 - Blockers: None for this milestone.
 - Next steps: Configure the database connection and add automated tests.
+
+
+### Database Connectivity
+- [x] Added environment-based database configuration.
+- [x] Created the SQLAlchemy engine.
+- [x] Added GET /health/db.
+- [x] Verified a real PostgreSQL query through the API.
+- Blockers: None for this milestone.
+- Next steps: Add automated tests and define the initial database schema.
