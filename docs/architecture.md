@@ -107,3 +107,16 @@ The application should support responsive desktop and mobile browsers.
 PWA support may be considered later.
 
 The deployment provider and production database architecture remain undecided.
+
+
+### Backend Foundation
+- Framework: FastAPI
+- Database: PostgreSQL 16
+- ORM: SQLAlchemy 2.x
+- PostgreSQL driver: psycopg
+- Migrations: Alembic
+- Configuration: pydantic-settings
+- Initial endpoint: GET /health
+
+The health endpoint verifies that the API starts successfully.
+It does not yet verify database connectivity.

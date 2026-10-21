@@ -107,3 +107,11 @@ Every teammate should append the following when completing a milestone:
 - Next steps:
 
 Do not mark a phase complete until its acceptance criteria have been verified.
+
+### Backend Foundation
+- [x] Created backend virtual environment.
+- [x] Installed initial FastAPI and database dependencies.
+- [x] Implemented the `/health` endpoint.
+- [x] Verified `/health` and `/docs` locally.
+- Blockers: None for this milestone.
+- Next steps: Configure the database connection and add automated tests.
