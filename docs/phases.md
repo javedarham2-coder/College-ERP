@@ -1,170 +1,198 @@
-# College ERP --- Master Milestone Map
+# College ERP — Master Milestone Map
 
-> **Purpose:** This is the single source of truth for project progress
-> and the next action. Update this file whenever a milestone is
-> verified, a blocker changes the plan, or an important
-> route/architecture decision changes.
+> This is the single source of truth for project progress, blockers, and the next action.
 >
-> **Status meanings:** `COMPLETE` = implemented and verified;
-> `IN PROGRESS` = actively being built; `NEXT` = immediate priority;
-> `PLANNED` = not started; `BLOCKED` = waiting for a decision or
-> dependency. A screen or code file alone does not make a feature
-> complete.
+> **Status meanings**
+> - `COMPLETE`: Implemented and verified.
+> - `IN PROGRESS`: Work is actively underway.
+> - `NEXT`: Immediate priority.
+> - `PLANNED`: Not started.
+> - `BLOCKED`: Waiting for a decision or dependency.
+>
+> A visible UI, written plan, or untested code does not qualify as complete.
 
 ## Project Goal
 
-Build one database-backed College ERP application with two independently
-developed modules---**Admission Management** (`admission/`) and
-**Student Management** (`student/`)---connected through one shared
-**FastAPI backend** and **PostgreSQL database**.
+Build one database-backed College ERP application with two independently developed modules:
 
-**Core workflow:** Applicant submits an application → authorized
-admission staff review it → application is approved or rejected → an
-approved admission creates exactly one linked student record under the
-college-approved registration rules → the student appears in Student
-Management.
+- `admission/` — Admission Management
+- `student/` — Student Management
 
-**Important boundary:** We are building a standalone project unless the
-college later provides explicit authorization, source code, API access,
-and requirements for integration with its existing ERP.
+Both modules will use one shared FastAPI backend and PostgreSQL database.
+
+**Core workflow:** Applicant submits an application → authorized admission staff review it → the application is approved or rejected → applicable enrollment conditions are satisfied → the backend creates at most one linked student record → the student appears in Student Management.
+
+The project will remain standalone unless the college provides explicit authorization and the technical information required for integration with its existing ERP.
 
 ## Current Project Snapshot
 
--   **Repository:** `College-ERP`; one GitHub repository and one VS Code
-    workspace.
--   **Frontend plan:** React, TypeScript, Vite, Tailwind CSS, React
-    Router, Axios.
--   **Backend plan/current foundation:** Python, FastAPI, Pydantic;
-    SQLAlchemy 2.x, Alembic, psycopg and pydantic-settings are
-    planned/expected but must be checked against the actual requirements
-    and files before schema work.
--   **Database:** PostgreSQL 16 in Docker Compose; database
-    `college_erp`, user `erp_user`.
--   **Last reported Git state:** `main` synced with `origin/main`,
-    working tree clean; HEAD was `25ce785` (`requirement updated`).
-    Recheck Git before the next commit.
--   **Current scope:** Backend foundation and health checks only.
-    Admission/student models, business APIs, frontend workflows,
-    authentication, end-to-end integration and deployment are not
-    complete.
+- **Repository:** `College-ERP`
+- **Git branch:** `main`
+- **Frontend plan:** React, TypeScript, Vite, Tailwind CSS, React Router, Axios.
+- **Backend:** FastAPI and Pydantic foundation exists.
+- **Database:** PostgreSQL 16 through Docker Compose.
+- **ORM:** SQLAlchemy 2.x is used by the existing database connection code.
+- **Migrations:** Alembic setup remains pending.
+- **Tests:** The last reported backend test run passed all 3 health tests.
+- **Current milestone:** Milestone 5 — database schema and migrations.
+- **Next action:** Reconcile backend dependencies, finalize the schema implementation details, configure Alembic, and implement the initial migration.
 
-## Milestone 1 --- Repository and Project Rules
+Recheck Git status and test results before committing further changes.
+
+## Agreed Requirements and Design Decisions
+
+### Admission Management
+
+The proposed admission record includes:
+
+- Application number and applicant contact information.
+- Course applied for and branch applied for.
+- Class 10 obtained marks, maximum marks, and percentage.
+- Class 12 obtained marks, maximum marks, and percentage.
+- Independent JEE and CUET participation fields.
+- Exam marks/score, percentile, and rank where applicable.
+- Application status and review information.
+- Creation and last-update timestamps.
+
+Exam-specific results remain optional when the applicant did not appear for that examination. Exam scoring formats and multiple-attempt support require validation before implementation.
+
+### Student Management
+
+The proposed student record includes:
+
+- Internal student ID and unique internal student number.
+- Official AKTU enrollment number, nullable until assigned.
+- Link to the originating admission.
+- Full name, email, and phone number.
+- Registered course and branch.
+- Current academic year.
+- Optional college roll number.
+- Creation and last-update timestamps.
+
+Student contact details initially copy from admission data. Authorized updates will be supported.
+
+Academic-year updates will be manual in the initial version.
+
+### Integrity Rules
+
+- Application numbers must be unique.
+- Internal student numbers must be unique.
+- AKTU enrollment numbers must be unique when assigned.
+- Roll numbers must be unique when assigned.
+- Each student must reference an existing admission.
+- One admission can create at most one student record.
+- Registration must be transactional and safe against repeated requests.
+- Official college identifiers must never be fabricated.
+
+### Requirements Still Requiring Confirmation
+
+Do not invent college policies about:
+
+- Mandatory fields and documents.
+- Eligibility and admission rules.
+- Entrance examination result formats and multiple attempts.
+- Final enrollment conditions.
+- Official enrollment-number and roll-number assignment.
+- User permissions and authentication.
+- Data retention and deployment.
+
+## Milestone 1 — Repository and Project Rules
 
 **Status: COMPLETE**
 
--   [x] Create/connect the GitHub repository and VS Code workspace.
--   [x] Establish separate `admission/` and `student/` module folders.
--   [x] Establish shared/backend/test/documentation folders.
--   [x] Create the initial product, architecture and coding/team rules
-    documents.
--   [x] Agree that backend and database---not frontend mock data---own
-    the business workflow.
+- [x] Establish the repository and VS Code workspace.
+- [x] Establish the independent admission and student module folders.
+- [x] Establish backend, test, shared, and documentation areas.
+- [x] Create the initial project documentation.
+- [x] Agree that the backend and database own the business workflow.
 
-**Completion evidence:** Repository and initial documentation were
-established. Preserve the existing structure unless an inspected need
-justifies changing it.
+**Evidence:** Initial repository and project documentation exist.
 
-## Milestone 2 --- Local Database Environment
+## Milestone 2 — Local Database Environment
 
-**Status: COMPLETE**
+**Status: COMPLETE — previously reported**
 
--   [x] Verify Docker and Docker Compose.
--   [x] Run PostgreSQL 16 in Docker.
--   [x] Verify database `college_erp` and database user `erp_user`.
--   [x] Confirm the database container is healthy and a database query
-    succeeds.
+- [x] Configure Docker and Docker Compose.
+- [x] Run PostgreSQL 16.
+- [x] Establish the `college_erp` database and `erp_user`.
+- [x] Verify database connectivity.
 
-**Completion evidence:** PostgreSQL and its local development connection
-were reported working.
+**Evidence:** PostgreSQL and the development database connection were reported working. Recheck if environment changes affect connectivity.
 
-## Milestone 3 --- FastAPI and Database Connectivity Foundation
+## Milestone 3 — FastAPI and Database Connectivity
 
-**Status: COMPLETE**
+**Status: COMPLETE — previously reported**
 
--   [x] Create the backend virtual environment and install the initial
-    dependencies.
--   [x] Implement `backend/app/main.py` and `GET /health`.
--   [x] Confirm interactive API documentation at `/docs`.
--   [x] Add environment-based settings in `backend/app/config.py`.
--   [x] Add SQLAlchemy engine/session setup in
-    `backend/app/database.py`.
--   [x] Implement `GET /health/db` and verify a real PostgreSQL
-    connection.
+- [x] Establish the backend virtual environment.
+- [x] Implement `GET /health`.
+- [x] Configure environment-based settings.
+- [x] Create SQLAlchemy engine/session setup.
+- [x] Implement `GET /health/db`.
 
-**Follow-up check:** Reconcile the actual `backend/requirements.txt`
-with the imports and planned stack. Earlier inspection did not show
-SQLAlchemy, Alembic, psycopg or pydantic-settings in that file, and no
-Alembic configuration was found under `backend/`. Do not assume those
-pieces exist until verified.
+**Follow-up:** Reconcile imports with `backend/requirements.txt`. The previous inspection found SQLAlchemy and `pydantic-settings` imports that were not declared in the requirements file.
 
-## Milestone 4 --- Automated Health Tests and Git Verification
+## Milestone 4 — Automated Health Tests and Git Verification
 
-**Status: COMPLETE --- recheck before the next change**
+**Status: COMPLETE — recheck after relevant changes**
 
--   [x] Test the normal health endpoint.
--   [x] Test the connected database-health path.
--   [x] Test simulated database unavailability.
--   [x] Latest reported result: **3 tests passed**.
--   [x] Test command: `cd backend && python -m pytest -v`.
--   [x] Latest reported Git state showed a clean working tree and `main`
-    synced with `origin/main`; test commit `00813b0` was in history.
+- [x] Test the normal health endpoint.
+- [x] Test the connected database-health path.
+- [x] Test simulated database unavailability.
+- [x] Previously reported result: 3 tests passed.
 
-**Rule:** Run the tests again after changes that affect backend
-configuration, database setup or health behavior.
+**Test command:**
 
-## Milestone 5 --- Confirm Requirements and Design the Database
+```bash
+cd backend && python -m pytest -v
+```
 
-**Status: NEXT**
+**Rule:** Rerun the relevant tests after modifying database configuration, dependencies, or health-check behavior.
 
-**Goal:** Agree on the minimum correct data model before writing
-migrations or business APIs.
+## Milestone 5 — Requirements and Database Schema
 
--   [ ] Recheck `docs/prd.md`, `docs/architecture.md`, `docs/rules.md`,
-    current source files, dependencies and Git status.
--   [ ] Reconcile the architecture document's database-health wording
-    with the implemented `/health/db` behavior.
--   [ ] Confirm required applicant, admission and student fields with
-    the team/college; mark unknown college policies as unresolved rather
-    than guessing.
--   [ ] Define admission statuses and valid transitions, including who
-    is allowed to approve/reject.
--   [ ] Decide student-number and optional roll-number generation rules
-    only after confirming college requirements.
--   [ ] Define relationships and constraints: unique application number;
-    unique student number; one student per originating admission;
-    optional roll number unique when assigned.
--   [ ] Define the approval/registration transaction and behavior on
-    retries, failures and duplicate requests.
--   [ ] Confirm SQLAlchemy/Alembic/driver/settings dependencies and
-    configure Alembic.
--   [ ] Create SQLAlchemy models, generate an initial migration, apply
-    it to the development database and verify the resulting schema.
--   [ ] Add/update only the relevant documentation in the same
-    milestone.
+**Status: IN PROGRESS**
 
-**Exit criteria:** The schema is documented, migration applies
-successfully, database tables/constraints are verified, and automated
-checks pass.
+### Requirements and Design
 
-## Milestone 6 --- Backend API Contracts and Implementation
+- [x] Review the PRD, architecture, current backend files, and milestone map.
+- [x] Agree on the proposed admission fields, including course, branch, Class 10/12 marks, and JEE/CUET results.
+- [x] Agree on the proposed student fields, including course, branch, year, contact information, and AKTU enrollment number.
+- [x] Agree that academic-year updates will initially be manual.
+- [x] Agree that official AKTU enrollment numbers must not be fabricated.
+- [x] Agree that an admission may create at most one student record.
+- [ ] Confirm any remaining college-specific requirements before finalizing implementation details.
+- [ ] Finalize field types, nullability, numeric precision, and validation constraints.
+
+### Implementation
+
+- [ ] Reconcile and update backend dependencies.
+- [ ] Configure Alembic.
+- [ ] Implement SQLAlchemy admission and student models.
+- [ ] Create the initial Alembic migration.
+- [ ] Apply the migration to the development PostgreSQL database.
+- [ ] Verify tables, relationships, and constraints.
+- [ ] Add relevant automated database tests.
+- [ ] Update the affected documentation with the implemented design and test evidence.
+- [ ] Commit code and documentation together after reviewing Git status and the diff.
+
+**Exit criteria:** The migration applies successfully, the resulting database schema is verified, relevant tests pass, and documentation reflects the actual implementation.
+
+## Milestone 6 — Backend API Contracts and Implementation
 
 **Status: PLANNED**
 
--   [ ] Agree on request/response schemas, status codes, validation
-    rules and error format before frontend integration.
--   [ ] Implement admission submission, listing and detail retrieval.
--   [ ] Implement admission review, approval and rejection.
--   [ ] Implement student listing, detail retrieval and permitted
-    updates.
--   [ ] Keep validation, authorization, status transitions and student
-    creation in the backend.
--   [ ] Make approval/registration transactional and retry-safe so one
-    admission cannot create duplicate students.
--   [ ] Add automated API and database tests.
+- [ ] Define request and response schemas.
+- [ ] Agree on validation, status codes, error responses, and permitted status transitions.
+- [ ] Implement admission submission, listing, and detail retrieval.
+- [ ] Implement authorized admission review, approval, and rejection.
+- [ ] Implement student listing, detail retrieval, and permitted updates.
+- [ ] Implement transaction-safe, retry-safe student registration.
+- [ ] Add automated API and database tests.
+- [ ] Document the finalized API contracts for both module owners.
 
-**Candidate routes (proposals only; not implemented until confirmed):**
+**Candidate routes — proposals, not yet implemented:**
 
-``` text
+```text
 POST  /api/v1/admissions
 GET   /api/v1/admissions
 GET   /api/v1/admissions/{id}
@@ -175,118 +203,101 @@ GET   /api/v1/students/{id}
 PATCH /api/v1/students/{id}
 ```
 
-**Exit criteria:** Documented, tested APIs operate against PostgreSQL;
-API contracts are ready for both module owners.
+Review these routes before treating them as the final API contract.
 
-## Milestone 7 --- Build Admission and Student Frontends Independently
+**Exit criteria:** The documented and tested APIs operate against PostgreSQL and are ready for frontend integration.
 
-**Status: PLANNED --- may overlap safely with Milestone 6**
-
-**Admission module (`admission/`):** - \[ \] Application form and
-client-side validation. - \[ \] Applicant list and detail view. - \[ \]
-Admission review/status interface. - \[ \] Approval/rejection actions
-connected to the agreed API.
-
-**Student module (`student/`):** - \[ \] Student directory. - \[ \]
-Search/filtering. - \[ \] Student profile/details. - \[ \] Permitted
-student updates and status display. - \[ \] Connect to the agreed
-student APIs.
-
--   [ ] Create/update `docs/design.md` when frontend design work begins.
--   [ ] Mock data may be used temporarily, but must be replaced by real
-    APIs before the integrated workflow is declared complete.
-
-**Exit criteria:** Each module can be demonstrated independently and its
-API usage, limitations and blockers are documented.
-
-## Milestone 8 --- Integrate the Complete Admission-to-Student Workflow
+## Milestone 7 — Independent Admission and Student Frontends
 
 **Status: PLANNED**
 
--   [ ] Connect both frontends to the shared FastAPI backend.
--   [ ] Verify API contracts, loading states and error handling.
--   [ ] Submit an application and retrieve it through the admission
-    module.
--   [ ] Approve/reject it through the authorized workflow.
--   [ ] Verify approval creates exactly one student record according to
-    confirmed college rules.
--   [ ] Verify the student record references the originating admission
-    and appears in Student Management.
--   [ ] Check CORS, validation, duplicate requests, transaction rollback
-    and data consistency.
--   [ ] Update architecture/API documentation if implementation differs
-    from the agreed design.
+### Admission Module
 
-**Exit criteria:** The complete workflow succeeds end to end against the
-real development database, not just mock data.
+- [ ] Build the application form and client-side validation.
+- [ ] Display admission applications and their details.
+- [ ] Display academic marks and entrance examination information.
+- [ ] Build the admission review and status interface.
+- [ ] Connect approval and rejection actions to the backend.
 
-## Milestone 9 --- Security, Reliability and Regression Testing
+### Student Module
 
-**Status: PLANNED**
+- [ ] Build the student directory.
+- [ ] Add search and filtering.
+- [ ] Build student profile and details views.
+- [ ] Display course, branch, academic year, and enrollment information.
+- [ ] Implement permitted student updates.
+- [ ] Connect to the agreed student APIs.
 
--   [ ] Test valid and invalid submissions, missing fields and invalid
-    status transitions.
--   [ ] Test duplicate approval/registration and repeated requests.
--   [ ] Test database failure and transaction rollback.
--   [ ] Implement and test authentication/role-based authorization
-    appropriate to the agreed scope before exposing protected actions.
--   [ ] Add database integration and end-to-end tests.
--   [ ] Re-run the full test suite and fix major bugs.
--   [ ] Avoid claiming security or production readiness without
-    evidence.
+Additional tasks:
 
-**Exit criteria:** Critical workflow and failure paths are tested; known
-limitations and unresolved risks are recorded.
+- [ ] Create or update `docs/design.md` when frontend design starts.
+- [ ] Replace temporary mock data with real API data before declaring the integrated workflow complete.
 
-## Milestone 10 --- Setup, Demo and Delivery
+**Exit criteria:** Each module works independently, uses its agreed contracts, and has documented limitations and blockers.
+
+## Milestone 8 — End-to-End Integration
 
 **Status: PLANNED**
 
--   [ ] Prepare synthetic demo data; do not use real student personal
-    data without authorization.
--   [ ] Verify environment configuration and keep `.env`, credentials
-    and tokens out of Git.
--   [ ] Verify database migrations and application startup from a clean
-    setup.
--   [ ] Update `README.md` with prerequisites, setup, run, migration and
-    test instructions.
--   [ ] Prepare and rehearse a short demonstration of the end-to-end
-    workflow.
--   [ ] Confirm repository status, documentation and final known
-    limitations.
--   [ ] Deploy only if time, hosting and security requirements permit.
+- [ ] Connect both frontends to the shared FastAPI backend.
+- [ ] Verify loading states, validation, and error handling.
+- [ ] Submit an admission application and retrieve it.
+- [ ] Review and approve/reject the application through the authorized workflow.
+- [ ] Verify that student creation follows confirmed enrollment conditions.
+- [ ] Verify that repeated registration requests do not create duplicate students.
+- [ ] Verify that the student references the originating admission.
+- [ ] Verify that the student appears in Student Management.
+- [ ] Test transaction rollback and relevant database failures.
+- [ ] Update architecture and API documentation if implementation differs from the agreed design.
 
-**Exit criteria:** Another teammate can set up and run the project using
-the documented instructions, and the demo shows the real working
-workflow.
+**Exit criteria:** The complete admission-to-student workflow succeeds against the development database using real API calls, not just mock data.
 
-## Working Rules for Every Milestone
+## Milestone 9 — Security, Reliability, and Regression Testing
 
-1.  **Read before changing:** Inspect the relevant documentation and
-    actual repository files before significant implementation or
-    architecture changes.
-2.  **Small, ordered steps:** Make one bounded change at a time; explain
-    the purpose in beginner-friendly language.
-3.  **Verify before marking complete:** Record the test or observable
-    evidence. UI existence alone is not proof.
-4.  **Update this map:** When a milestone is completed, update its
-    status and checklist; record test results, blockers and the
-    immediate next action.
-5.  **Record route/architecture changes:** If an API route, schema,
-    workflow or major decision changes, update this map and the relevant
-    `architecture.md`, `prd.md`, `rules.md`, `design.md` or `memory.md`
-    in the same task as appropriate.
-6.  **Keep documents purposeful:** `phases.md` is only this master
-    milestone map. Use `memory.md` for material decisions---not a
-    conversation diary.
-7.  **Every teammate contributes:** The person completing a milestone
-    reports completed work, tests, blockers and next steps so the map
-    remains truthful.
-8.  **Safe Git workflow:** Check `git status`, review the diff, stage
-    specific relevant files, and commit code plus relevant documentation
-    together. Never commit `.env`, credentials, tokens or `.venv`.
-9.  **No guessed college policy:** Keep uncertain registration
-    conditions, required fields, permissions and numbering rules marked
-    as unresolved until confirmed.
-10. **Re-plan transparently:** If a blocker or new requirement changes
-    the sequence, update the map before proceeding and explain why.
+**Status: PLANNED**
+
+- [ ] Test valid and invalid admission submissions.
+- [ ] Test missing fields and invalid marks.
+- [ ] Test optional JEE/CUET results and applicable scoring validations.
+- [ ] Test invalid admission status transitions.
+- [ ] Test repeated approval and registration requests.
+- [ ] Test database failure and transaction rollback.
+- [ ] Implement and test appropriate authentication and role-based authorization.
+- [ ] Verify access controls for admission decisions and student updates.
+- [ ] Run the full test suite.
+- [ ] Record known limitations and unresolved risks.
+
+**Exit criteria:** Critical workflows and failure paths have been tested, and known limitations are documented.
+
+## Milestone 10 — Setup, Demo, and Delivery
+
+**Status: PLANNED**
+
+- [ ] Prepare synthetic demonstration data.
+- [ ] Verify that secrets remain outside Git.
+- [ ] Verify clean setup, application startup, and database migrations.
+- [ ] Update `README.md` with prerequisites, setup, run, migration, and test instructions.
+- [ ] Rehearse a short end-to-end demonstration.
+- [ ] Verify Git status, documentation, and known limitations.
+- [ ] Deploy only if time, hosting, and security requirements permit.
+
+**Exit criteria:** A teammate can set up and run the project using the documentation, and the demonstration shows the real working workflow.
+
+## Working Rules
+
+1. Read relevant documentation and source files before significant changes.
+2. Make small, ordered changes and explain their purpose.
+3. Verify behavior before marking work complete.
+4. Update this master map after milestone verification or material plan changes.
+5. Update the relevant PRD, architecture, rules, design, or memory documentation when necessary.
+6. Keep `phases.md` as the single master progress map.
+7. Record material decisions in `memory.md`, not ordinary conversation.
+8. Review Git status and diffs before committing.
+9. Commit relevant code and documentation together.
+10. Never commit `.env`, credentials, tokens, or virtual environments.
+11. Do not invent college policies or official identifiers.
+12. Record completed work, tests, blockers, and next steps honestly.
+
+## Immediate Next Action
+
+Continue Milestone 5 by reconciling backend dependencies, finalizing the schema's implementation details, and setting up Alembic before creating and testing the initial migration.
