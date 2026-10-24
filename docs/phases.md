@@ -477,3 +477,24 @@ Copy this template and append it after the latest entry whenever work progresses
 ```
 
 **Important:** A new entry records progress; it does not automatically make a milestone complete. Verify the milestone's exit criteria before reporting completion.
+
+### Milestone 6 Progress Update — 24 October 2026
+
+**Completed and tested**
+- Registered Admission and Student routers in the FastAPI application.
+- Implemented admission submission, listing, and detail retrieval.
+- Implemented development-gated admission approval and rejection.
+- Implemented student listing, detail retrieval, and permitted updates.
+- Added API tests covering admission review and Student API behavior.
+- Verified that all 25 automated tests pass using a temporary SQLite database.
+- Verified that the expected API routes are registered.
+
+**Outstanding**
+- Verify the implementation against PostgreSQL.
+- Finalize and document API request/response contracts and error behavior.
+- Implement and test authentication and role-based authorization before treating protected workflows as production-ready.
+- Confirm official student-number and academic-year rules.
+- Implement and test transaction-safe, retry-safe student registration.
+- Complete end-to-end integration testing.
+
+**Current status:** Milestone 6 is in progress. Passing SQLite tests and registering routes do not satisfy all milestone exit criteria.

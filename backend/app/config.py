@@ -1,4 +1,3 @@
-
 from pathlib import Path
 
 from pydantic import Field
@@ -13,6 +12,10 @@ class Settings(BaseSettings):
     postgres_db: str = "college_erp"
     postgres_user: str = "erp_user"
     postgres_password: str = Field(validation_alias="POSTGRES_PASSWORD")
+
+    # Development-only admission review endpoints.
+    # Keep disabled unless explicitly enabled in the local environment.
+    enable_dev_review_endpoints: bool = False
 
     model_config = SettingsConfigDict(
         env_file=PROJECT_ROOT / ".env",

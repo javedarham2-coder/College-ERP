@@ -336,3 +336,38 @@ Keep any existing notes about unconfirmed college requirements.
 Update relevant documentation when a material requirement, schema, workflow, API contract, or architectural decision changes.
 
 Do not mark a feature complete until it has been implemented and verified.
+
+## Backend API Implementation Status
+
+The FastAPI application currently registers the following endpoints.
+
+### Admission Management
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/v1/admissions` | Submit an admission application |
+| GET | `/api/v1/admissions` | List applications with pagination and optional status filtering |
+| GET | `/api/v1/admissions/{admission_id}` | Retrieve application details |
+| POST | `/api/v1/admissions/{admission_id}/approve` | Approve an application |
+| POST | `/api/v1/admissions/{admission_id}/reject` | Reject an application |
+
+Admission review endpoints are controlled by the `ENABLE_DEV_REVIEW_ENDPOINTS` configuration setting. They are intended for development and must not be treated as production-secure review workflows.
+
+### Student Management
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/v1/students` | List student records |
+| GET | `/api/v1/students/{student_id}` | Retrieve student details |
+| PATCH | `/api/v1/students/{student_id}` | Update permitted student fields |
+
+### Health Checks
+
+- `GET /health` checks application availability.
+- `GET /health/db` checks database connectivity.
+
+### Verification Status
+
+The current automated test suite contains 25 passing tests using a temporary SQLite database. These tests cover admission submission and review, Student API operations, validation, health checks, and database model constraints.
+
+PostgreSQL integration verification, authentication and authorization, and transaction-safe student registration remain outstanding. Automatic student registration following admission approval must not be assumed until the required business rules are confirmed and implemented.
