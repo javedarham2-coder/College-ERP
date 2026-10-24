@@ -498,3 +498,24 @@ Copy this template and append it after the latest entry whenever work progresses
 - Complete end-to-end integration testing.
 
 **Current status:** Milestone 6 is in progress. Passing SQLite tests and registering routes do not satisfy all milestone exit criteria.
+
+### PostgreSQL Integration Testing — 25 October 2026
+
+**Implemented**
+- Added opt-in PostgreSQL integration tests in `backend/tests/test_postgres_integration.py`.
+- Covered admission creation and retrieval, development-gated approval, and student retrieval and updates.
+- Guarded the integration-test cleanup so it only runs against `college_erp_test`.
+- Preserved the existing SQLite-based automated tests.
+
+**Verification**
+- PostgreSQL integration tests: record the actual result after execution.
+- Existing SQLite tests: record the actual result after execution.
+
+**Outstanding**
+- Verify additional PostgreSQL constraints and error cases.
+- Complete API authentication and role-based authorization.
+- Confirm student-number and academic-year business rules.
+- Implement and test transaction-safe student registration.
+- Complete end-to-end workflow testing.
+
+**Current status:** Milestone 6 remains in progress.

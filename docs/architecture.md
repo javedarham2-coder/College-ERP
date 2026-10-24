@@ -371,3 +371,12 @@ Admission review endpoints are controlled by the `ENABLE_DEV_REVIEW_ENDPOINTS` c
 The current automated test suite contains 25 passing tests using a temporary SQLite database. These tests cover admission submission and review, Student API operations, validation, health checks, and database model constraints.
 
 PostgreSQL integration verification, authentication and authorization, and transaction-safe student registration remain outstanding. Automatic student registration following admission approval must not be assumed until the required business rules are confirmed and implemented.
+
+### PostgreSQL Integration Tests
+
+PostgreSQL integration tests are maintained separately from the SQLite-based unit and API tests.
+
+Run them explicitly from the `backend/` directory:
+
+```bash
+COLLEGE_ERP_RUN_PG_TESTS=1 python -m pytest -v tests/test_postgres_integration.py
