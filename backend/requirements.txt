@@ -43,3 +43,8 @@ typing-inspection==0.4.2
 typing_extensions==4.16.0
 uvicorn==0.35.0
 wcwidth==0.8.2
+# Database and migrations
+SQLAlchemy==2.1.6
+alembic==1.20.0
+psycopg==3.3.6
+pydantic-settings==2.16.1

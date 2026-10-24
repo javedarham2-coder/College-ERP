@@ -319,6 +319,20 @@ Any future integration requires college authorization, technical investigation, 
 - `memory.md` records only material project decisions.
 - `design.md` is created or updated when frontend design work begins.
 
+In the admission schema section, ensure it reflects these decisions:
+- reviewed_by is deferred until a user/accounts model is designed.
+- Admission statuses are submitted, under_review, approved, and rejected.
+- Marks, percentages, and percentiles use numeric database types.
+- Admission and student timestamps use timezone-aware date/time fields.
+- The admission status and numeric range constraints are implemented in the SQLAlchemy model.
+In the student schema section, add or confirm:
+- students.admission_id is a required foreign key to admissions.id.
+- students.admission_id is unique, so one admission can be linked to at most one student.
+- student_number is required and unique.
+- enrollment_number and roll_number are nullable and unique when provided.
+- Automatic number generation and college-specific enrollment rules remain unresolved.
+Keep any existing notes about unconfirmed college requirements.
+
 Update relevant documentation when a material requirement, schema, workflow, API contract, or architectural decision changes.
 
 Do not mark a feature complete until it has been implemented and verified.

@@ -118,3 +118,9 @@ Update relevant documents when important requirements, schemas, workflows, API c
 - Never commit `.env`, credentials, tokens, or virtual environments.
 - Do not modify production systems without explicit authorization.
 - Do not claim that a feature is complete until its behavior has been implemented and verified.
+
+- Admission statuses for the initial schema are submitted, under_review, approved, and rejected.
+- reviewed_by is deferred until the user/accounts model is designed.
+- The Student model references Admission through a unique foreign key.
+- Number-generation formats and college-specific enrollment rules remain unresolved.
+Avoid duplicating the full schema or adding a transcript of this conversation.
