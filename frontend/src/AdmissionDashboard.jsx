@@ -16,7 +16,7 @@ const navItems = [
   { label: 'Reports', icon: '▥' },
 ]
 
-function AdmissionDashboard({ onLogout }) {
+function AdmissionDashboard({ onLogout, theme, onToggleTheme }) {
   const [applications, setApplications] = useState(initialApplications)
   const [activeNav, setActiveNav] = useState('Overview')
   const [filter, setFilter] = useState('All')
@@ -51,10 +51,12 @@ function AdmissionDashboard({ onLogout }) {
   }
 
   return (
-    <div className="admin-layout">
+    <div className={`admin-layout theme-${theme}`}>
       <aside className="admin-sidebar">
         <div className="admin-brand">
-          <div className="admin-logo">C</div>
+          <div className="brand-logo">
+  <img src="/college-logo.png" alt="College Logo" />
+</div>
           <div>
             <strong>College ERP</strong>
             <span>Administration</span>
@@ -99,6 +101,13 @@ function AdmissionDashboard({ onLogout }) {
             <h1>{activeNav === 'Overview' ? 'Admission Overview' : activeNav}</h1>
           </div>
           <div className="topbar-right">
+            <button
+  className="dashboard-theme-toggle"
+  type="button"
+  onClick={onToggleTheme}
+>
+  {theme === 'light' ? '☾ Dark mode' : '☀ Light mode'}
+</button>
             <span className="today-label">Admissions Portal</span>
             <div className="top-avatar">AS</div>
           </div>

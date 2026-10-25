@@ -597,3 +597,188 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Dashboard light/dark themes */
+.admin-layout {
+  --dashboard-bg: #f6f7fb;
+  --dashboard-card: #ffffff;
+  --dashboard-text: #172033;
+  --dashboard-muted: #7c8598;
+  --dashboard-border: #e8ebf2;
+
+  background: var(--dashboard-bg);
+  color: var(--dashboard-text);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.admin-layout.theme-dark {
+  --dashboard-bg: #101522;
+  --dashboard-card: #1b2333;
+  --dashboard-text: #f1f5f9;
+  --dashboard-muted: #a8b2c5;
+  --dashboard-border: #354056;
+}
+
+.admin-sidebar,
+.admin-topbar,
+.stat-card,
+.content-section,
+.review-modal {
+  color: var(--dashboard-text);
+}
+
+.admin-sidebar,
+.stat-card,
+.content-section,
+.review-modal {
+  background: var(--dashboard-card);
+  border-color: var(--dashboard-border);
+}
+
+.admin-sidebar {
+  border-right: 1px solid var(--dashboard-border);
+}
+
+.admin-brand span,
+.staff-profile span,
+.stat-top,
+.stat-card small,
+.section-heading p,
+.applications-table td,
+.breadcrumb,
+.admin-footer,
+.today-label,
+.modal-email,
+.review-detail span {
+  color: var(--dashboard-muted);
+}
+
+.admin-layout .applications-table th {
+  background: var(--dashboard-bg);
+  border-color: var(--dashboard-border);
+  color: var(--dashboard-muted);
+}
+
+.admin-layout .applications-table td {
+  border-color: var(--dashboard-border);
+}
+
+.admin-layout .applicant-cell strong,
+.admin-layout .review-detail strong {
+  color: var(--dashboard-text);
+}
+
+.admin-layout .search-input,
+.admin-layout .table-toolbar select {
+  background: var(--dashboard-card);
+  color: var(--dashboard-text);
+  border-color: var(--dashboard-border);
+}
+
+.admin-layout .view-button,
+.admin-layout .logout-button {
+  border-color: var(--dashboard-border);
+}
+
+.admin-layout .view-button {
+  background: var(--dashboard-card);
+  color: #818cf8;
+}
+
+.dashboard-theme-toggle {
+  padding: 9px 12px;
+  border: 1px solid var(--dashboard-border);
+  border-radius: 9px;
+  background: var(--dashboard-card);
+  color: var(--dashboard-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.admin-layout .modal-close {
+  background: transparent;
+  color: var(--dashboard-muted);
+}
+
+@media (max-width: 700px) {
+  .topbar-right {
+    gap: 8px;
+  }
+
+  .dashboard-theme-toggle {
+    padding: 8px;
+    font-size: 11px;
+  }
+}
+/* College logo in the dashboard sidebar */
+.brand-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 3px;
+  display: block;
+}
+
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 5px;
+}
+/* College logo in dashboard sidebar */
+.admin-brand .brand-logo {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+.admin-brand .brand-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 3px;
+}
+/* Fix college logo in dashboard sidebar */
+.admin-sidebar .admin-brand .brand-logo {
+  background: #ffffff;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.admin-sidebar .admin-brand .brand-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 3px;
+}

@@ -167,3 +167,125 @@ button:hover {
   width: 100%;
 }
 
+/* Theme toggle */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 22px;
+  z-index: 20;
+  width: auto;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Login theme variables */
+.page {
+  --page-bg: #f3f5fb;
+  --card-bg: #ffffff;
+  --text-color: #172033;
+  --muted-color: #737b8f;
+  --border-color: #e1e5ef;
+
+  background: var(--page-bg);
+  color: var(--text-color);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.page.theme-dark {
+  --page-bg: #101522;
+  --card-bg: #1b2333;
+  --text-color: #f1f5f9;
+  --muted-color: #a8b2c5;
+  --border-color: #354056;
+
+  background: var(--page-bg);
+}
+
+.login-card {
+  background: var(--card-bg);
+  border-color: var(--border-color);
+  color: var(--text-color);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* Center the branding and welcome section */
+.login-brand,
+.login-welcome {
+  text-align: center;
+}
+
+.college-logo {
+  display: block;
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  margin: 0 auto 16px;
+}
+
+.login-brand h1 {
+  margin: 0;
+  text-align: center;
+}
+
+.login-brand .subtitle {
+  margin: 8px 0 0;
+  color: var(--muted-color);
+}
+
+.login-welcome h2 {
+  margin: 30px 0 8px;
+  text-align: center;
+}
+
+.login-welcome .description {
+  margin: 0 0 26px;
+  color: var(--muted-color);
+  text-align: center;
+}
+
+/* Inputs adapt to dark mode */
+.page input {
+  background: var(--card-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.page input::placeholder {
+  color: var(--muted-color);
+  opacity: 0.8;
+}
+
+.page label,
+.page .footer {
+  color: var(--muted-color);
+}
+
+.page .toggle-password {
+  color: #818cf8;
+}
+
+.page .toggle-password:hover {
+  background: var(--page-bg);
+}
+
+.page .theme-toggle:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 480px) {
+  .theme-toggle {
+    top: 12px;
+    right: 12px;
+  }
+
+  .login-card {
+    margin-top: 36px;
+  }
+}
+
