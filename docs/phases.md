@@ -614,3 +614,61 @@ alone does not satisfy the completion criteria.
 
 Inspect the current backend and database models, then implement the
 authentication foundation in a separate, testable milestone.
+---
+
+## Progress Update — 2026-10-25
+
+### Milestone: Frontend Login and Admission Dashboard
+
+**Status: IN PROGRESS**
+
+### Completed Work
+- Built the React/Vite login page prototype.
+- Added basic email and password validation on the frontend.
+- Added password visibility toggle.
+- Added light and dark theme support.
+- Built the admission dashboard UI with summary cards, application search, status filters, and review actions.
+- Added the official college logo to the login page.
+- Replaced the dashboard sidebar's placeholder logo with the official college logo.
+
+### Verification
+- The login page and admission dashboard have been opened and visually checked.
+- The logo file is available at `frontend/public/college-logo.png`.
+- The logo can be opened directly through the Vite development server.
+- Demo dashboard interactions have been tested during development.
+- Full automated frontend testing and backend integration have not yet been verified.
+
+### Outstanding Work
+- Connect login to the backend JWT authentication API.
+- Implement backend-enforced authorization and role-based access.
+- Replace hardcoded applicant data with API responses.
+- Connect application approval and rejection to the backend.
+- Add loading, error, and empty states for API requests.
+- Coordinate API contracts with the backend teammate.
+- Test responsive layouts and theme switching.
+- Complete the admission-to-student workflow integration.
+
+### Blockers and Unresolved Items
+- Authentication and API integration depend on the agreed backend contracts.
+- Staff permissions and student account access must follow the project's confirmed authorization rules.
+
+### Next Action
+Review the current frontend changes, verify the Git diff and working-tree status, and coordinate with the backend teammate before beginning API integration.
+### Frontend UI and Responsiveness — 2026-10-25
+
+Completed:
+- Built the College ERP login page UI with college logo.
+- Built the admission dashboard UI with search, filters, and review actions.
+- Added light and dark theme switching.
+- Added responsive layouts and manually tested the login page and dashboard at mobile widths.
+- Committed and pushed frontend changes to `raiyan/initial-setup`.
+
+Limitations:
+- Authentication is still demo-only.
+- Admission data is hardcoded and not persisted.
+- Backend API integration is pending.
+
+Next Steps:
+- Coordinate with the backend teammate on API contracts.
+- Integrate authentication and admission APIs.
+- Test the complete admission-to-student registration workflow.
