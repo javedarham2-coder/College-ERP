@@ -519,3 +519,98 @@ Copy this template and append it after the latest entry whenever work progresses
 - Complete end-to-end workflow testing.
 
 **Current status:** Milestone 6 remains in progress.
+
+## Milestone 7 — Authentication and Authorization
+
+**Status: NEXT**
+
+**Goal:** Establish secure JWT-based authentication for students and
+college staff, then protect admission and student APIs according to
+confirmed authorization requirements.
+
+### Planned work
+
+- [ ] Review the existing backend, database models, schemas, API routes,
+      tests, and project documentation.
+- [ ] Finalize the user-account model and its relationship to student
+      records.
+- [ ] Define the initial account types and permission boundaries.
+- [ ] Confirm the staff account-creation and management process.
+- [ ] Implement secure password hashing.
+- [ ] Implement the login endpoint and JWT access-token generation.
+- [ ] Add backend dependencies for token verification and authorization.
+- [ ] Protect admission and student APIs according to the approved policy.
+- [ ] Ensure students cannot access other students' private records.
+- [ ] Protect admission approval and rejection operations.
+- [ ] Add automated authentication, authorization, and ownership tests.
+- [ ] Apply and verify database migrations if the schema changes.
+- [ ] Update relevant documentation and verify the existing test suite.
+
+### Completion criteria
+
+The milestone may be marked COMPLETE only when the authentication and
+authorization behavior has been implemented, tested, and documented.
+
+A login screen, token-generation function, or successful API response
+alone does not satisfy the completion criteria.
+
+### Dependencies and unresolved decisions
+
+- Exact staff roles and permissions.
+- Student account creation and account-to-student linking.
+- Staff account provisioning and administration.
+- Public versus authenticated admission submission.
+- Token lifetime and signing-key configuration.
+
+---
+
+## Progress Update — 2026-10-25
+
+### Milestone: Authentication and Authorization Planning
+
+**Status: PLANNING COMPLETE — IMPLEMENTATION NOT STARTED**
+
+### Decisions confirmed
+
+- JWT-based authentication is the selected authentication approach.
+- The ERP must support both students and college staff.
+- Authentication and authorization will be enforced by the shared
+  FastAPI backend.
+- Student access must be restricted to the student's own permitted
+  information.
+- Staff access will follow the permissions defined for their approved
+  responsibilities.
+- Existing admission and student APIs must be reviewed and protected.
+- Passwords must be securely hashed.
+- JWT signing secrets must remain outside version control.
+
+### Documentation changes
+
+- Update `docs/architecture.md` with the authentication and
+  authorization architecture.
+- Update the milestone plan to include authentication and
+  authorization work.
+- Preserve earlier progress entries as historical records.
+
+### Verification
+
+- No authentication implementation has been performed as part of
+  this planning update.
+- No new authentication tests have been run.
+- The existing backend test results remain separate from future
+  authentication verification.
+
+### Blockers and unresolved decisions
+
+- Final staff roles and permissions require confirmation.
+- Student account creation and linkage to student records must be
+  defined.
+- Staff account provisioning must be agreed.
+- Public admission submission requirements must be confirmed.
+- Token lifetime and signing-key configuration must be finalized
+  during implementation.
+
+### Next action
+
+Inspect the current backend and database models, then implement the
+authentication foundation in a separate, testable milestone.

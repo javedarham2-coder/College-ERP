@@ -380,3 +380,130 @@ Run them explicitly from the `backend/` directory:
 
 ```bash
 COLLEGE_ERP_RUN_PG_TESTS=1 python -m pytest -v tests/test_postgres_integration.py
+
+## Authentication and Authorization
+
+### 1. Authentication Approach
+
+The project will use JWT-based authentication for students and college
+staff.
+
+The authentication system will be implemented in the shared FastAPI
+backend and will use PostgreSQL to persist user accounts.
+
+Planned authentication components:
+
+- User accounts with unique login identities.
+- Secure password hashing; passwords must never be stored in plaintext.
+- A login endpoint that verifies credentials.
+- JWT access tokens issued after successful authentication.
+- Backend authentication dependencies for protected API endpoints.
+- Configurable token expiry and secure signing-key management.
+
+JWT authentication is a planned architectural decision. It must not be
+considered implemented until the relevant code and tests are complete.
+
+### 2. Target Users
+
+The authentication system must support:
+
+- Students.
+- Admission staff.
+- Student-record staff.
+- Other authorized college staff.
+- Administrators, subject to confirmed requirements.
+
+The exact staff roles, permissions, account-creation process, and
+account-management rules require further definition.
+
+These categories describe intended users and do not establish a
+finalized college permission policy.
+
+### 3. Authorization and Data Protection
+
+Authentication verifies the user's identity. Authorization determines
+which actions and records that user may access.
+
+The backend must enforce authorization independently of frontend
+visibility.
+
+Planned access boundaries:
+
+- Students may access their own permitted student information and
+  services.
+- Admission staff may access admission operations permitted by their
+  assigned permissions.
+- Student-record staff may access and update records permitted by
+  their assigned permissions.
+- Other staff may access only their authorized features.
+- Administrative operations must be restricted to authorized accounts.
+
+Users must not gain access to another student's private records merely
+because they are authenticated.
+
+Exact permissions must be confirmed before they are implemented.
+
+### 4. Existing API Protection
+
+The existing admission and student APIs must be reviewed and protected
+according to the confirmed access policy.
+
+Protection must cover, where applicable:
+
+- Admission listing and individual admission retrieval.
+- Student listing and individual student retrieval.
+- Student record updates.
+- Admission approval and rejection.
+
+Public admission submission may remain available without an existing
+account if that matches the approved admission workflow. Public
+submission must not grant access to private admission or student data.
+
+The development-only admission review flag is not a replacement for
+authentication or authorization.
+
+### 5. User Accounts and Data Relationships
+
+The authentication design must establish how user accounts relate to
+student records.
+
+A student account must be linked to the correct student record so the
+backend can enforce record ownership.
+
+Staff accounts must support authorization based on the permissions
+approved for the project.
+
+The final account-to-student relationship, staff role model, and
+account provisioning process must be agreed before database migrations
+are created.
+
+Do not invent official college account rules or create real college
+accounts without authorization.
+
+### 6. Security Requirements
+
+- Store password hashes, never plaintext passwords.
+- Keep JWT signing secrets outside version control.
+- Reject missing, invalid, and expired tokens.
+- Validate permissions on protected backend operations.
+- Prevent students from accessing other students' private information.
+- Avoid exposing credentials, tokens, or sensitive student information
+  in logs and error responses.
+- Use synthetic data during development.
+- Do not connect to or modify production systems without explicit
+  authorization.
+
+### 7. Authentication Testing
+
+Tests must verify:
+
+- Successful login with valid credentials.
+- Rejection of invalid credentials.
+- Rejection of missing, malformed, invalid, and expired tokens.
+- Access to protected endpoints with valid authentication.
+- Denial of operations without the required permissions.
+- Student record ownership restrictions.
+- Appropriate protection of admission review operations.
+
+Authentication and authorization must not be described as complete
+until implementation and relevant tests have been verified.
