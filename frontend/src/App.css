@@ -288,4 +288,35 @@ button:hover {
     margin-top: 36px;
   }
 }
+/* Responsive login page */
+.login-card {
+  width: min(100% - 32px, 420px);
+  box-sizing: border-box;
+}
 
+.college-logo {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.login-card input,
+.login-card button {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 24px 18px;
+    border-radius: 16px;
+  }
+
+  .login-brand h1 {
+    font-size: 25px;
+  }
+
+  .login-welcome h2 {
+    font-size: 22px;
+  }
+}

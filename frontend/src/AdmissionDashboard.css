@@ -782,3 +782,105 @@
   object-fit: contain;
   padding: 3px;
 }
+/* Responsive admission dashboard */
+.admin-layout {
+  min-width: 0;
+}
+
+.admin-sidebar,
+.admin-main,
+.admin-content,
+.admin-topbar {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .admin-layout {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+
+  .admin-main {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-layout {
+    display: block;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+  }
+
+  .admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-main {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .admin-topbar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .applications-table,
+  .table-container {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 380px) {
+  .stats-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-main {
+    padding: 12px;
+  }
+}
+@media (max-width: 640px) {
+  .admin-sidebar {
+    padding: 12px;
+  }
+
+  .admin-brand {
+    gap: 10px;
+  }
+
+  .admin-nav {
+    gap: 6px;
+  }
+
+  .admin-nav button,
+  .admin-nav a {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .admin-main {
+    padding: 12px;
+    min-width: 0;
+  }
+
+  .admin-topbar {
+    align-items: flex-start;
+  }
+
+  .admin-topbar h1 {
+    font-size: 22px;
+  }
+}
