@@ -124,3 +124,12 @@ Update relevant documents when important requirements, schemas, workflows, API c
 - The Student model references Admission through a unique foreign key.
 - Number-generation formats and college-specific enrollment rules remain unresolved.
 Avoid duplicating the full schema or adding a transcript of this conversation.
+
+## Authentication milestone decisions — 2026-10-25
+
+- Initial roles are `admin`, `admission_staff`, and `student`; role checks run on the backend and use the current database user record rather than trusting a role claim alone.
+- Passwords are stored as salted scrypt hashes. JWT access tokens use HS256, a configurable expiry, and a signing key supplied only through `JWT_SECRET_KEY`.
+- Public admission submission remains open. Admission listing, detail retrieval, and review require staff authorization; the existing development review flag remains an additional gate.
+- Student accounts must have an explicit unique link to a student record. Student self-registration is not implemented; the first authentication slice deliberately avoids creating unlinked student accounts.
+- Staff accounts are provisioned locally through the backend CLI for now; no public registration endpoint is exposed.
+- Do not mark authentication milestone complete until migrations and tests are executed successfully in the project environment.

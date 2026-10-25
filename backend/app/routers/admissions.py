@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
+from app.auth import AdmissionStaff
 from app.database import get_db
 from app.schemas.admission import AdmissionCreate, AdmissionRead
 from app.services.admission_service import (
@@ -11,10 +12,6 @@ from app.services.admission_service import (
     get_admission,
     list_admissions,
 )
-from fastapi import Depends
-from fastapi import HTTPException
-from fastapi import status as http_status
-
 from app.config import settings
 from app.schemas.admission import AdmissionReview
 from app.services.admission_service import review_admission
@@ -47,6 +44,7 @@ def submit_admission(payload: AdmissionCreate, db: DbSession):
 @router.get("", response_model=list[AdmissionRead])
 def get_admissions(
     db: DbSession,
+    _user: AdmissionStaff,
     offset: int = Query(default=0, ge=0),
     limit: int = Query(default=20, ge=1, le=100),
     admission_status: Literal[
@@ -68,7 +66,7 @@ def get_admissions(
 
 
 @router.get("/{admission_id}", response_model=AdmissionRead)
-def get_admission_details(admission_id: int, db: DbSession):
+def get_admission_details(admission_id: int, db: DbSession, _user: AdmissionStaff):
     try:
         admission = get_admission(db, admission_id)
     except SQLAlchemyError as exc:
@@ -90,6 +88,7 @@ def approve_admission(
     admission_id: int,
     payload: AdmissionReview,
     db: DbSession,
+    _user: AdmissionStaff,
 ):
     if not settings.enable_dev_review_endpoints:
         raise HTTPException(
@@ -110,6 +109,7 @@ def reject_admission(
     admission_id: int,
     payload: AdmissionReview,
     db: DbSession,
+    _user: AdmissionStaff,
 ):
     if not settings.enable_dev_review_endpoints:
         raise HTTPException(

@@ -672,3 +672,33 @@ Next Steps:
 - Coordinate with the backend teammate on API contracts.
 - Integrate authentication and admission APIs.
 - Test the complete admission-to-student registration workflow.
+
+- The JWT authentication migration was applied and verified against the configured PostgreSQL test database; `alembic current` reported the authentication migration at head.
+- All 3 PostgreSQL integration tests passed against `college_erp_test`.
+- The ordinary backend test suite reported 38 passed and 3 skipped. The three PostgreSQL integration tests are skipped by default unless `COLLEGE_ERP_RUN_PG_TESTS=1` is set.
+- Configure `JWT_SECRET_KEY` locally with a randomly generated value of at least 32 characters. Never commit `.env` or signing keys.
+- Student-account provisioning, admin user-management APIs, and end-to-end frontend login integration remain outstanding.
+
+**Status: IN PROGRESS — verification pending**
+
+#### Implemented in source
+- Added the `User` model and Alembic migration for login identity, scrypt password hash, active status, initial role, and optional unique student-record link.
+- Added password hashing/verification and JWT issue/validation helpers.
+- Added `POST /api/v1/auth/login` and `GET /api/v1/auth/me`.
+- Added backend role dependencies and protected admission list/detail/review and student list/detail/update endpoints.
+- Preserved public admission submission; student users can access only their linked record and can edit only contact fields.
+- Added a local CLI for provisioning admin and admission-staff accounts; student account provisioning is intentionally blocked pending verified record-linking rules.
+- Added initial automated tests for password handling, login, invalid/expired tokens, role access, and model constraints.
+
+#### Verification and blockers
+- A test run was attempted in the available execution environment but could not start because the PostgreSQL `psycopg` driver is not installed there; network access is unavailable to install it. This is an environment limitation, not a passing test result.
+- Run the migration and complete test suite from the project's configured backend virtual environment before treating this slice as verified.
+- Configure `JWT_SECRET_KEY` locally with a randomly generated value of at least 32 characters. Never commit `.env` or the key.
+- Student-account provisioning, admin user-management APIs, and end-to-end frontend login integration remain outstanding.
+
+#### Next steps
+1. Install/sync the backend requirements in the project virtual environment.
+2. Run `alembic upgrade head` against the intended development database and inspect `alembic current`.
+3. Run the complete backend test suite and resolve any failures.
+4. Review role policy and implement a verified student account-linking flow before enabling student logins.
+5. Update this progress log only after real verification results are available.

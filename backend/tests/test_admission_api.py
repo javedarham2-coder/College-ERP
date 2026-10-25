@@ -1,49 +1,7 @@
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
-
-from app.database import get_db
-from app.main import app
-from app.models.base import Base
-from app.models.admission import Admission
-from app.models.student import Student
 from app.config import settings
-
-# Temporary database used only for these tests.
-engine = create_engine(
-    "sqlite://",
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-
-TestingSessionLocal = sessionmaker(
-    bind=engine,
-    autoflush=False,
-    autocommit=False,
-)
-
-
-@pytest.fixture
-def client():
-    Base.metadata.create_all(bind=engine)
-
-    def override_get_db():
-        db = TestingSessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
-
-    app.dependency_overrides[get_db] = override_get_db
-
-    with TestClient(app) as test_client:
-        yield test_client
-
-    app.dependency_overrides.clear()
-    Base.metadata.drop_all(bind=engine)
-
+from app.models.student import Student
+from conftest import TestingSessionLocal
 
 def valid_application():
     return {
@@ -70,31 +28,31 @@ def test_submit_admission(client):
     assert data["id"] is not None
 
 
-def test_list_admissions(client):
+def test_list_admissions(client, auth_headers):
     client.post("/api/v1/admissions", json=valid_application())
 
-    response = client.get("/api/v1/admissions")
+    response = client.get("/api/v1/admissions", headers=auth_headers())
 
     assert response.status_code == 200
     assert len(response.json()) == 1
     assert response.json()[0]["full_name"] == "Test Applicant"
 
 
-def test_get_admission_details(client):
+def test_get_admission_details(client, auth_headers):
     created = client.post(
         "/api/v1/admissions",
         json=valid_application(),
     )
     admission_id = created.json()["id"]
 
-    response = client.get(f"/api/v1/admissions/{admission_id}")
+    response = client.get(f"/api/v1/admissions/{admission_id}", headers=auth_headers())
 
     assert response.status_code == 200
     assert response.json()["id"] == admission_id
 
 
-def test_missing_admission_returns_404(client):
-    response = client.get("/api/v1/admissions/99999")
+def test_missing_admission_returns_404(client, auth_headers):
+    response = client.get("/api/v1/admissions/99999", headers=auth_headers())
 
     assert response.status_code == 404
 
@@ -108,21 +66,23 @@ def test_invalid_email_is_rejected(client):
     assert response.status_code == 422
 
 
-def test_list_admissions_supports_pagination(client):
+def test_list_admissions_supports_pagination(client, auth_headers):
     client.post("/api/v1/admissions", json=valid_application())
 
-    response = client.get("/api/v1/admissions?offset=0&limit=1")
+    response = client.get("/api/v1/admissions?offset=0&limit=1", headers=auth_headers())
 
     assert response.status_code == 200
     assert len(response.json()) == 1
     
-def test_approve_admission(client):
+def test_approve_admission(client, auth_headers, monkeypatch):
+    monkeypatch.setattr(settings, "enable_dev_review_endpoints", True)
     created = client.post("/api/v1/admissions", json=valid_application())
     admission_id = created.json()["id"]
 
     response = client.post(
         f"/api/v1/admissions/{admission_id}/approve",
         json={"remarks": "Documents reviewed."},
+        headers=auth_headers(),
     )
 
     assert response.status_code == 200
@@ -130,46 +90,55 @@ def test_approve_admission(client):
     assert response.json()["review_remarks"] == "Documents reviewed."
 
 
-def test_reject_admission(client):
+def test_reject_admission(client, auth_headers, monkeypatch):
+    monkeypatch.setattr(settings, "enable_dev_review_endpoints", True)
     created = client.post("/api/v1/admissions", json=valid_application())
     admission_id = created.json()["id"]
 
     response = client.post(
         f"/api/v1/admissions/{admission_id}/reject",
         json={"remarks": "Eligibility criteria not met."},
+        headers=auth_headers(),
     )
 
     assert response.status_code == 200
     assert response.json()["status"] == "rejected"
 
 
-def test_cannot_review_admission_twice(client):
+def test_cannot_review_admission_twice(client, auth_headers, monkeypatch):
+    monkeypatch.setattr(settings, "enable_dev_review_endpoints", True)
     created = client.post("/api/v1/admissions", json=valid_application())
     admission_id = created.json()["id"]
+
+    headers = auth_headers()
 
     first_response = client.post(
         f"/api/v1/admissions/{admission_id}/approve",
         json={"remarks": "Approved."},
+        headers=headers,
     )
     second_response = client.post(
         f"/api/v1/admissions/{admission_id}/reject",
         json={"remarks": "Rejected."},
+        headers=headers,
     )
 
     assert first_response.status_code == 200
     assert second_response.status_code == 409
 
 
-def test_review_missing_admission_returns_404(client):
+def test_review_missing_admission_returns_404(client, auth_headers, monkeypatch):
+    monkeypatch.setattr(settings, "enable_dev_review_endpoints", True)
     response = client.post(
         "/api/v1/admissions/99999/approve",
         json={"remarks": "Test."},
+        headers=auth_headers(),
     )
 
     assert response.status_code == 404
 
 
-def test_review_endpoints_disabled_returns_404(client, monkeypatch):
+def test_review_endpoints_disabled_returns_404(client, monkeypatch, auth_headers):
     monkeypatch.setattr(settings, "enable_dev_review_endpoints", False)
 
     created = client.post("/api/v1/admissions", json=valid_application())
@@ -178,6 +147,7 @@ def test_review_endpoints_disabled_returns_404(client, monkeypatch):
     response = client.post(
         f"/api/v1/admissions/{admission_id}/approve",
         json={"remarks": "Test."},
+        headers=auth_headers(),
     )
 
     assert response.status_code == 404
@@ -210,33 +180,33 @@ def create_test_student(client):
         db.close()
 
 
-def test_list_students(client):
+def test_list_students(client, auth_headers):
     create_test_student(client)
 
-    response = client.get("/api/v1/students")
+    response = client.get("/api/v1/students", headers=auth_headers())
 
     assert response.status_code == 200
     assert len(response.json()) == 1
     assert response.json()[0]["full_name"] == "Test Applicant"
 
 
-def test_get_student_details(client):
+def test_get_student_details(client, auth_headers):
     student_id = create_test_student(client)
 
-    response = client.get(f"/api/v1/students/{student_id}")
+    response = client.get(f"/api/v1/students/{student_id}", headers=auth_headers())
 
     assert response.status_code == 200
     assert response.json()["id"] == student_id
     assert response.json()["student_number"] == "STU-TEST-001"
 
 
-def test_missing_student_returns_404(client):
-    response = client.get("/api/v1/students/99999")
+def test_missing_student_returns_404(client, auth_headers):
+    response = client.get("/api/v1/students/99999", headers=auth_headers())
 
     assert response.status_code == 404
 
 
-def test_update_student_contact_details(client):
+def test_update_student_contact_details(client, auth_headers):
     student_id = create_test_student(client)
 
     response = client.patch(
@@ -245,6 +215,7 @@ def test_update_student_contact_details(client):
             "email": "updated@example.com",
             "phone_number": "9123456789",
         },
+        headers=auth_headers(),
     )
 
     assert response.status_code == 200
@@ -252,12 +223,13 @@ def test_update_student_contact_details(client):
     assert response.json()["phone_number"] == "9123456789"
 
 
-def test_empty_student_update_returns_422(client):
+def test_empty_student_update_returns_422(client, auth_headers):
     student_id = create_test_student(client)
 
     response = client.patch(
         f"/api/v1/students/{student_id}",
         json={},
+        headers=auth_headers(),
     )
 
     assert response.status_code == 422

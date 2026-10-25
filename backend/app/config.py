@@ -13,6 +13,10 @@ class Settings(BaseSettings):
     postgres_user: str = "erp_user"
     postgres_password: str = Field(validation_alias="POSTGRES_PASSWORD")
 
+    # JWT key is supplied only through the environment or local .env file.
+    jwt_secret_key: str = Field(default="", validation_alias="JWT_SECRET_KEY")
+    jwt_access_token_expire_minutes: int = Field(default=30, ge=1, le=1440, validation_alias="JWT_ACCESS_TOKEN_EXPIRE_MINUTES")
+
     # Development-only admission review endpoints.
     # Keep disabled unless explicitly enabled in the local environment.
     enable_dev_review_endpoints: bool = False

@@ -1,4 +1,4 @@
-from app.models import Admission, Base, Student
+from app.models import Admission, Base, Student, User
 
 
 def test_admission_table_has_expected_columns():
@@ -78,3 +78,14 @@ def test_percentage_and_percentile_constraints_exist():
 def test_both_models_are_registered_in_metadata():
     assert "admissions" in Base.metadata.tables
     assert "students" in Base.metadata.tables
+    assert "users" in Base.metadata.tables
+
+
+def test_user_table_has_expected_columns():
+    columns = User.__table__.columns
+    expected = {"id", "email", "password_hash", "role", "is_active", "student_id"}
+    assert expected.issubset(columns.keys())
+
+def test_user_role_constraint_exists():
+    constraints = {constraint.name for constraint in User.__table__.constraints}
+    assert "ck_users_role" in constraints

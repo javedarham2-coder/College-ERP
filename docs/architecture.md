@@ -507,3 +507,16 @@ Tests must verify:
 
 Authentication and authorization must not be described as complete
 until implementation and relevant tests have been verified.
+
+### Authentication implementation update — 2026-10-25
+
+The first implementation slice of Milestone 7 is now present in the backend source:
+
+- `users` stores a normalized login email, a scrypt password hash, an active flag, a role, and an optional unique link to a student record.
+- `POST /api/v1/auth/login` issues an HS256 JWT after checking credentials; `GET /api/v1/auth/me` returns the current account.
+- The initial roles are `admin`, `admission_staff`, and `student`. Admission review/list/detail operations require an admin or admission-staff account. Student listing requires staff; a student may access only the linked student record and may update only their email and phone number.
+- Public admission submission remains available. Review endpoints still additionally require `ENABLE_DEV_REVIEW_ENDPOINTS=true`.
+- Staff accounts are created using the local CLI (`python -m app.cli create-user --email ... --role admin` or `admission_staff`); there is no public account-creation endpoint. Student account provisioning intentionally remains unavailable until a verified student-linking workflow is implemented.
+- JWT signing uses `JWT_SECRET_KEY` from the environment/local `.env`; it must be at least 32 characters. Configure `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` as needed (default 30, maximum 1440). No production secret is included in source control.
+
+This is an implementation-in-progress, not a completion claim. The authentication migration was verified at the current Alembic head, all three PostgreSQL integration tests passed against college_erp_test, and the ordinary test suite reported 38 passed and 3 skipped. Existing database records are not automatically assigned user accounts. Remaining implementation and security review work must be completed before the authentication milestone is marked complete.
