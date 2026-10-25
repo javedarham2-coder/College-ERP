@@ -320,3 +320,44 @@ button:hover {
     font-size: 22px;
   }
 }
+/* Login card - stronger blue glow */
+.login-card {
+  position: relative;
+  border: 1px solid rgba(37, 99, 235, 0.65);
+  box-shadow:
+    0 0 0 1px rgba(37, 99, 235, 0.16),
+    0 0 18px rgba(37, 99, 235, 0.22),
+    0 10px 32px rgba(37, 99, 235, 0.16);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+  border-color: rgba(37, 99, 235, 0.9);
+  box-shadow:
+    0 0 0 1px rgba(37, 99, 235, 0.25),
+    0 0 24px rgba(37, 99, 235, 0.3),
+    0 12px 38px rgba(37, 99, 235, 0.2);
+}
+
+/* Light mode */
+.theme-light .login-card {
+  border-color: rgba(29, 78, 216, 0.65);
+  box-shadow:
+    0 0 0 1px rgba(29, 78, 216, 0.12),
+    0 0 20px rgba(37, 99, 235, 0.2),
+    0 8px 30px rgba(37, 99, 235, 0.14);
+}
+/* Dark mode */
+.theme-dark .login-card {
+  border-color: rgba(96, 165, 250, 0.75);
+  box-shadow:
+    0 0 0 1px rgba(96, 165, 250, 0.18),
+    0 0 20px rgba(59, 130, 246, 0.24),
+    0 8px 32px rgba(0, 0, 0, 0.28);
+}
+.theme-dark .login-card:hover {
+  border-color: rgba(147, 197, 253, 0.95);
+  box-shadow:
+    0 0 10px rgba(96, 165, 250, 0.32),
+    0 0 28px rgba(59, 130, 246, 0.25);
+}
