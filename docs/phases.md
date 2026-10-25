@@ -654,3 +654,21 @@ authentication foundation in a separate, testable milestone.
 
 ### Next Action
 Review the current frontend changes, verify the Git diff and working-tree status, and coordinate with the backend teammate before beginning API integration.
+### Frontend UI and Responsiveness — 2026-10-25
+
+Completed:
+- Built the College ERP login page UI with college logo.
+- Built the admission dashboard UI with search, filters, and review actions.
+- Added light and dark theme switching.
+- Added responsive layouts and manually tested the login page and dashboard at mobile widths.
+- Committed and pushed frontend changes to `raiyan/initial-setup`.
+
+Limitations:
+- Authentication is still demo-only.
+- Admission data is hardcoded and not persisted.
+- Backend API integration is pending.
+
+Next Steps:
+- Coordinate with the backend teammate on API contracts.
+- Integrate authentication and admission APIs.
+- Test the complete admission-to-student registration workflow.
