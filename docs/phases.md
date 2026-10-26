@@ -672,3 +672,54 @@ Next Steps:
 - Coordinate with the backend teammate on API contracts.
 - Integrate authentication and admission APIs.
 - Test the complete admission-to-student registration workflow.
+
+---
+
+## Progress Update — 2026-10-26
+
+### Milestone: JWT Authentication and Authorization
+
+**Status: IN PROGRESS**
+
+### Completed Work
+
+- Added the initial database-backed user model.
+- Implemented secure password hashing and JWT access-token handling.
+- Implemented the login endpoint and authenticated current-user endpoint.
+- Added role-based authorization dependencies.
+- Protected admission listing and detail retrieval.
+- Restricted admission review operations using staff authorization and the development review-endpoints flag.
+- Protected student listing and restricted student access to linked records.
+- Restricted student updates to permitted contact fields.
+- Added CLI-based staff account provisioning.
+- Added automated authentication and authorization tests.
+- Added the user-account database migration and updated the relevant project documentation.
+
+### Verification Evidence
+
+- Authentication tests: **11 passed**.
+- Ordinary backend test suite: **38 passed, 3 skipped**.
+- PostgreSQL integration tests: **3 passed** against `college_erp_test`.
+- The authentication migration was applied to the PostgreSQL test database.
+- The authenticated `/api/v1/auth/me` endpoint returned HTTP 200 for a valid bearer token.
+- Authenticated admission and student listing endpoints returned HTTP 200 in the manual API verification.
+
+### Remaining Work
+
+- Connect the frontend login page to the backend authentication endpoint.
+- Replace demo-only frontend authentication and hardcoded admission data.
+- Define and implement the student-account creation and account-linking workflow.
+- Implement administrative user-management capabilities where required.
+- Complete end-to-end authorization testing through the frontend and backend.
+- Verify the development review-endpoints flag is disabled outside development environments.
+- Review the final Git diff and ensure no credentials, tokens, or `.env` files are committed.
+
+### Blockers and Unresolved Decisions
+
+- Student account provisioning and linking rules remain unresolved.
+- Administrative user management remains outstanding.
+- Full frontend/backend integration has not yet been verified.
+
+### Next Action
+
+Complete the documentation and security-configuration review, verify the working tree and secret exclusion, then prepare a clean commit on `feature/jwt-authentication`.
