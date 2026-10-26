@@ -133,3 +133,19 @@ Avoid duplicating the full schema or adding a transcript of this conversation.
 - Student accounts must have an explicit unique link to a student record. Student self-registration is not implemented; the first authentication slice deliberately avoids creating unlinked student accounts.
 - Staff accounts are provisioned locally through the backend CLI for now; no public registration endpoint is exposed.
 - Do not mark authentication milestone complete until migrations and tests are executed successfully in the project environment.
+
+## Decision 12 — Initial Authentication and Authorization
+
+- Use JWT bearer tokens to authenticate users of the shared FastAPI backend.
+- Store user accounts in the database and hash passwords securely; never store plaintext passwords.
+- The initial application roles are `admin`, `admission_staff`, and `student`.
+- Staff accounts are provisioned through a backend CLI. Public staff registration is not supported.
+- Admission submission remains public, while admission listing and detail retrieval require staff authentication.
+- Admission approval and rejection require staff authorization and the development review-endpoints flag.
+- Student listing requires staff authorization.
+- Students may access only their own linked student record and may update only permitted contact fields.
+- Student account provisioning is deferred until the account-to-student linking workflow is defined.
+- JWT signing secrets and database credentials must remain outside version control.
+- Authentication and authorization are not considered complete until the relevant tests and end-to-end workflows are verified.
+
+These are the initial implementation decisions. Any future change to roles, permissions, or account-linking behavior must be reflected in the architecture and relevant tests.
