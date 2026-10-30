@@ -27,3 +27,6 @@ class StudentUpdate(BaseModel):
     current_year: int | None = Field(default=None, ge=1)
     enrollment_number: str | None = Field(default=None, max_length=100)
     roll_number: str | None = Field(default=None, max_length=100)
+    
+class StudentRegistration(BaseModel):
+    current_year: int = Field(ge=1)

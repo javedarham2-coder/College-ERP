@@ -1,15 +1,20 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.auth import CurrentUser, StudentStaff
 from app.database import get_db
-from app.schemas.student import StudentRead, StudentUpdate
+from app.schemas.student import (
+    StudentRead,
+    StudentRegistration,
+    StudentUpdate,
+)
 from app.services.student_service import (
     get_student,
     list_students,
+    register_student_from_admission,
     update_student,
 )
 
@@ -33,6 +38,47 @@ def get_students(
             detail="Unable to retrieve students.",
         ) from exc
 
+
+@router.post(
+    "/register-from-admission/{admission_id}",
+    response_model=StudentRead,
+    status_code=201,
+)
+def register_student(
+    admission_id: int,
+    payload: StudentRegistration,
+    db: DbSession,
+    _user: StudentStaff,
+    response: Response,
+):
+    try:
+        student, created = register_student_from_admission(
+            db,
+            admission_id=admission_id,
+            current_year=payload.current_year,
+        )
+
+        if not created:
+            response.status_code = 200
+
+        return student
+
+    except HTTPException:
+        raise
+
+    except IntegrityError as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Registration conflicts with an existing record.",
+        ) from exc
+
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=503,
+            detail="Unable to register the student.",
+        ) from exc
 
 @router.get("/{student_id}", response_model=StudentRead)
 def get_student_details(student_id: int, db: DbSession, user: CurrentUser):
