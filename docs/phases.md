@@ -753,3 +753,41 @@ Next Steps:
 ### Next Action
 
 Complete the documentation and security-configuration review, verify the working tree and secret exclusion, then prepare a clean commit on `feature/jwt-authentication`.
+
+---
+
+## Progress Update — 2026-10-30
+
+### Milestone: Authentication and Authorization
+
+**Status: IMPLEMENTATION IN PROGRESS**
+
+### Completed and verified
+
+- Implemented JWT login and the authenticated-user endpoint.
+- Added password hashing and backend authentication and authorization dependencies.
+- Applied the authentication database migration and verified it at the current Alembic head.
+- Protected the relevant admission and student API operations according to the initial role policy.
+- Added authentication and authorization tests.
+- Verified all 11 authentication tests.
+- Verified the standard backend suite: 38 passed, 3 skipped.
+- Verified all three PostgreSQL integration tests against `college_erp_test`.
+- Updated authentication architecture and decision documentation.
+
+### Remaining work
+
+- Implement and verify student account provisioning and account-to-student linking.
+- Implement administrative user management as required.
+- Integrate frontend login with the backend.
+- Complete end-to-end authorization and admission-to-student workflow testing.
+- Review the security implications of the implemented role policy and account-provisioning process.
+
+### Verification and completion criteria
+
+The recorded test results verify the checks listed above; they do not establish that all authentication-related work is complete.
+
+Do not mark this milestone COMPLETE until the remaining required behavior is implemented, tested, and documented.
+
+### Blockers and next steps
+
+Confirm the remaining account-management requirements, complete the frontend integration, and test the full workflow against the agreed backend interfaces.

@@ -368,9 +368,16 @@ Admission review endpoints are controlled by the `ENABLE_DEV_REVIEW_ENDPOINTS` c
 
 ### Verification Status
 
-The current automated test suite contains 25 passing tests using a temporary SQLite database. These tests cover admission submission and review, Student API operations, validation, health checks, and database model constraints.
+The backend has verified the current authentication implementation, standard test suite, and PostgreSQL integration tests in the developer's configured environment.
 
-PostgreSQL integration verification, authentication and authorization, and transaction-safe student registration remain outstanding. Automatic student registration following admission approval must not be assumed until the required business rules are confirmed and implemented.
+Latest recorded verification results:
+
+- All 11 authentication tests passed.
+- The ordinary backend test suite reported 38 passed and 3 skipped.
+- All three PostgreSQL integration tests passed against the `college_erp_test` database.
+- The authentication migration was applied and verified at the current Alembic head.
+
+These results confirm the recorded checks, not completion of every backend feature. Transaction-safe student registration and the complete admission-to-student workflow still require implementation and end-to-end verification.
 
 ### PostgreSQL Integration Tests
 
@@ -380,157 +387,3 @@ Run them explicitly from the `backend/` directory:
 
 ```bash
 COLLEGE_ERP_RUN_PG_TESTS=1 python -m pytest -v tests/test_postgres_integration.py
-
-## Authentication and Authorization
-
-### 1. Authentication Approach
-
-The project will use JWT-based authentication for students and college
-staff.
-
-The authentication system will be implemented in the shared FastAPI
-backend and will use PostgreSQL to persist user accounts.
-
-Planned authentication components:
-
-- User accounts with unique login identities.
-- Secure password hashing; passwords must never be stored in plaintext.
-- A login endpoint that verifies credentials.
-- JWT access tokens issued after successful authentication.
-- Backend authentication dependencies for protected API endpoints.
-- Configurable token expiry and secure signing-key management.
-
-JWT authentication is a planned architectural decision. It must not be
-considered implemented until the relevant code and tests are complete.
-
-### 2. Target Users
-
-The authentication system must support:
-
-- Students.
-- Admission staff.
-- Student-record staff.
-- Other authorized college staff.
-- Administrators, subject to confirmed requirements.
-
-The exact staff roles, permissions, account-creation process, and
-account-management rules require further definition.
-
-These categories describe intended users and do not establish a
-finalized college permission policy.
-
-### 3. Authorization and Data Protection
-
-Authentication verifies the user's identity. Authorization determines
-which actions and records that user may access.
-
-The backend must enforce authorization independently of frontend
-visibility.
-
-Planned access boundaries:
-
-- Students may access their own permitted student information and
-  services.
-- Admission staff may access admission operations permitted by their
-  assigned permissions.
-- Student-record staff may access and update records permitted by
-  their assigned permissions.
-- Other staff may access only their authorized features.
-- Administrative operations must be restricted to authorized accounts.
-
-Users must not gain access to another student's private records merely
-because they are authenticated.
-
-Exact permissions must be confirmed before they are implemented.
-
-### 4. Existing API Protection
-
-The existing admission and student APIs must be reviewed and protected
-according to the confirmed access policy.
-
-Protection must cover, where applicable:
-
-- Admission listing and individual admission retrieval.
-- Student listing and individual student retrieval.
-- Student record updates.
-- Admission approval and rejection.
-
-Public admission submission may remain available without an existing
-account if that matches the approved admission workflow. Public
-submission must not grant access to private admission or student data.
-
-The development-only admission review flag is not a replacement for
-authentication or authorization.
-
-### 5. User Accounts and Data Relationships
-
-The authentication design must establish how user accounts relate to
-student records.
-
-A student account must be linked to the correct student record so the
-backend can enforce record ownership.
-
-Staff accounts must support authorization based on the permissions
-approved for the project.
-
-The final account-to-student relationship, staff role model, and
-account provisioning process must be agreed before database migrations
-are created.
-
-Do not invent official college account rules or create real college
-accounts without authorization.
-
-### 6. Security Requirements
-
-- Store password hashes, never plaintext passwords.
-- Keep JWT signing secrets outside version control.
-- Reject missing, invalid, and expired tokens.
-- Validate permissions on protected backend operations.
-- Prevent students from accessing other students' private information.
-- Avoid exposing credentials, tokens, or sensitive student information
-  in logs and error responses.
-- Use synthetic data during development.
-- Do not connect to or modify production systems without explicit
-  authorization.
-
-### 7. Authentication Testing
-
-Tests must verify:
-
-- Successful login with valid credentials.
-- Rejection of invalid credentials.
-- Rejection of missing, malformed, invalid, and expired tokens.
-- Access to protected endpoints with valid authentication.
-- Denial of operations without the required permissions.
-- Student record ownership restrictions.
-- Appropriate protection of admission review operations.
-
-Authentication and authorization must not be described as complete
-until implementation and relevant tests have been verified.
-
-### Authentication implementation update — 2026-10-25
-
-The first implementation slice of Milestone 7 is now present in the backend source:
-
-- `users` stores a normalized login email, a scrypt password hash, an active flag, a role, and an optional unique link to a student record.
-- `POST /api/v1/auth/login` issues an HS256 JWT after checking credentials; `GET /api/v1/auth/me` returns the current account.
-- The initial roles are `admin`, `admission_staff`, and `student`. Admission review/list/detail operations require an admin or admission-staff account. Student listing requires staff; a student may access only the linked student record and may update only their email and phone number.
-- Public admission submission remains available. Review endpoints still additionally require `ENABLE_DEV_REVIEW_ENDPOINTS=true`.
-- Staff accounts are created using the local CLI (`python -m app.cli create-user --email ... --role admin` or `admission_staff`); there is no public account-creation endpoint. Student account provisioning intentionally remains unavailable until a verified student-linking workflow is implemented.
-- JWT signing uses `JWT_SECRET_KEY` from the environment/local `.env`; it must be at least 32 characters. Configure `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` as needed (default 30, maximum 1440). No production secret is included in source control.
-
-This is an implementation-in-progress, not a completion claim. The authentication migration was verified at the current Alembic head, all three PostgreSQL integration tests passed against college_erp_test, and the ordinary test suite reported 38 passed and 3 skipped. Existing database records are not automatically assigned user accounts. Remaining implementation and security review work must be completed before the authentication milestone is marked complete.
-
-### Authentication Verification Status
-
-The JWT authentication implementation and database migration have been verified in the developer's configured backend environment.
-
-Verification results:
-- The authentication migration was applied to the PostgreSQL test database.
-- All 11 authentication tests passed.
-- The ordinary backend test suite reported 38 passed and 3 skipped.
-- The three PostgreSQL integration tests were separately executed against `college_erp_test` and all passed.
-
-The implementation remains in progress rather than being declared complete. Student account provisioning and account-to-student linking, administrative user management, frontend login integration, and complete end-to-end authorization testing remain outstanding.
-
-Existing admission and student records are not automatically assigned user accounts. JWT signing keys and database credentials must remain outside version control.
