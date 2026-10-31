@@ -1,14 +1,34 @@
+import os
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
+RUN_POSTGRES_INTEGRATION_TESTS = (
+    os.getenv("COLLEGE_ERP_RUN_PG_TESTS") == "1"
+)
+POSTGRES_TEST_DATABASE = "college_erp_test"
+
+if RUN_POSTGRES_INTEGRATION_TESTS:
+    os.environ["POSTGRES_DB"] = POSTGRES_TEST_DATABASE
+
 from app.config import settings
+from app.database import engine as postgres_engine
 from app.database import get_db
 from app.main import app
 from app.models import Base, User
 from app.security import create_access_token, hash_password
+
+if (
+    RUN_POSTGRES_INTEGRATION_TESTS
+    and postgres_engine.url.database != POSTGRES_TEST_DATABASE
+):
+    raise pytest.UsageError(
+        "PostgreSQL integration tests must use the college_erp_test database; "
+        f"refusing to run against {postgres_engine.url.database!r}."
+    )
 
 engine = create_engine(
     "sqlite://",
